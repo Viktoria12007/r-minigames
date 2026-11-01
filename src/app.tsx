@@ -1,6 +1,3 @@
 export default function App() {
-
-  return (
-    <div>R-minigames</div>
-  )
+  return <div>R-minigames</div>;
 }
