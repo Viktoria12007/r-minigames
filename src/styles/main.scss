@@ -1,0 +1,87 @@
+﻿@use './variables' as *;
+@use './fonts' as *;
+
+//@use '../components/header/header';
+//@use '../components/hero/hero';
+//@use '../components/games/games';
+//@use '../components/leaderboard/leaderboard';
+//@use '../components/developer/developer';
+//@use '../components/footer/footer';
+//@use '../components/auth/auth';
+//@use '../components/intro/intro';
+//@use '../components/cards/cards';
+//@use '../components/details-dialog/detailsDialog';
+//@use '../components/pagination/pagination';
+//@use '../components/snackbar/snackbar';
+@use 'not-found';
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: $bg;
+  color: $on-bg;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  font-size: $body-medium;
+  font-weight: $medium;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+.container {
+  max-width: $content-width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 1024px) {
+  body {
+    font-size: $body-small;
+  }
+
+  .title {
+    font-size: $headline-medium;
+    &::before {
+      height: 24px;
+      vertical-align: -4px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: $label-medium;
+  }
+}
