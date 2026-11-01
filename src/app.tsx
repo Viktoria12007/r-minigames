@@ -1,3 +1,10 @@
+import Layout from './layouts/layout.tsx';
+import Home from "./pages/home.tsx";
+
 export default function App() {
-  return <div>R-minigames</div>;
+  return (
+      <Layout>
+          <Home />
+      </Layout>
+  )
 }
