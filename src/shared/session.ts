@@ -1,5 +1,5 @@
 import type { User } from 'firebase/auth';
-import type {AppSession, SessionCheck} from "../types/types.ts";
+import type { AppSession, SessionCheck } from '../types/types.ts';
 // import { signOutFirebase } from './firebase';
 
 export const appSessionKey = 'minigames:viktoria12007:app-session';
