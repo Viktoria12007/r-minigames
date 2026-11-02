@@ -16,7 +16,6 @@ export default function Leaderboard() {
       .then(({ data }) => {
         setLeaders(data);
         setStatus(leaders?.length === 0 ? 'empty' : null);
-        throw new Error('Leaderboard not found');
       })
       .catch(() => {
         setStatus('error');
