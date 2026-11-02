@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { Leader, Status } from '../../types/types.ts';
 import { getApi } from '../../shared/api.ts';
 import SkeletonLeaderboard from './skeleton-leaderboard.tsx';
@@ -11,17 +11,17 @@ export default function Leaderboard() {
   const [status, setStatus] = useState<Status | null>('loading');
   const [leaders, setLeaders] = useState<Leader[] | null>(null);
 
-  const fetchLeaders = () => {
+  const fetchLeaders = useCallback(() => {
     void getApi<Leader[]>('/leaderboard')
       .then(({ data }) => {
         setLeaders(data);
-        setStatus(leaders?.length === 0 ? 'empty' : null);
+        setStatus(data.length === 0 ? 'empty' : null);
       })
       .catch(() => {
         setStatus('error');
         showSnackbar('Top players could not be loaded. Please try again.', 'error');
       });
-  };
+  }, [showSnackbar]);
 
   const retry = () => {
     setStatus('loading');
@@ -30,7 +30,7 @@ export default function Leaderboard() {
 
   useEffect(() => {
     fetchLeaders();
-  }, []);
+  }, [fetchLeaders]);
 
   return (
     <section className="leaderboard container" aria-labelledby="leaderboard-title">
