@@ -13,12 +13,12 @@ export type SessionCheck = {
 };
 
 export type Leader = {
-    rank: number;
-    playerName: string;
-    gamesPlayed: number;
-    totalScore: number;
-    streakDays: number;
-    favoriteGameName: string;
+  rank: number;
+  playerName: string;
+  gamesPlayed: number;
+  totalScore: number;
+  streakDays: number;
+  favoriteGameName: string;
 };
 
 export type Status = 'loading' | 'empty' | 'error';
@@ -26,7 +26,7 @@ export type Status = 'loading' | 'empty' | 'error';
 export type SnackbarVariant = 'success' | 'error';
 
 export interface SnackbarData {
-    id: string;
-    text: string;
-    variant: SnackbarVariant;
+  id: string;
+  text: string;
+  variant: SnackbarVariant;
 }
