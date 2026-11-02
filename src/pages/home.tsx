@@ -1,3 +1,11 @@
+import Hero from '../components/hero/hero.tsx';
+import Leaderboard from '../components/leaderboard/leaderboard.tsx';
+
 export default function Home() {
-  return <div>Home page</div>;
+  return (
+    <>
+      <Hero />
+      <Leaderboard />
+    </>
+  );
 }
