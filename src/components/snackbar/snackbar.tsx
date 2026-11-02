@@ -2,20 +2,20 @@ import type { SnackbarData } from '../../types/types.ts';
 import { useEffect } from 'react';
 
 interface ISnackbarProperties extends SnackbarData {
-  onClose: () => void;
+  onClose: (id: string) => void;
 }
 
-export default function Snackbar({ text, variant, onClose }: ISnackbarProperties) {
+export default function Snackbar({ id, text, variant, onClose }: ISnackbarProperties) {
   useEffect(() => {
-    const timeoutId = setTimeout(onClose, 5000);
+    const timeoutId = setTimeout(() => onClose(id), 5000);
 
     return () => clearTimeout(timeoutId);
-  }, [onClose]);
+  }, [id, onClose]);
 
   return (
     <div className="snackbar" role="status" aria-live="polite" data-variant={variant}>
       <p className="snackbar__message">{text}</p>
-      <button className="snackbar__close" aria-label="Dismiss notification" onClick={onClose}>
+      <button className="snackbar__close" aria-label="Dismiss notification" onClick={() => onClose(id)}>
         ×
       </button>
     </div>

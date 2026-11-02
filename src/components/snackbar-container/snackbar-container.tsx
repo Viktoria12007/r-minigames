@@ -11,7 +11,7 @@ export default function SnackbarContainer({ snackbars, onClose }: ISnackbarConta
   return createPortal(
     <div className="snackbar-list">
       {snackbars.map((snackbar) => (
-        <Snackbar key={snackbar.id} {...snackbar} onClose={() => onClose(snackbar.id)} />
+        <Snackbar key={snackbar.id} {...snackbar} onClose={onClose} />
       ))}
     </div>,
     document.body,
