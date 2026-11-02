@@ -2,9 +2,9 @@
 @use './fonts' as *;
 
 @use '../components/header/header';
-//@use '../components/hero/hero';
+@use '../components/hero/hero';
 //@use '../components/games/games';
-//@use '../components/leaderboard/leaderboard';
+@use '../components/leaderboard/leaderboard';
 //@use '../components/developer/developer';
 @use '../components/footer/footer';
 //@use '../components/auth/auth';
@@ -12,7 +12,7 @@
 //@use '../components/cards/cards';
 //@use '../components/details-dialog/detailsDialog';
 //@use '../components/pagination/pagination';
-//@use '../components/snackbar/snackbar';
+@use '../components/snackbar/snackbar';
 @use 'not-found';
 
 * {
