@@ -21,11 +21,14 @@ export default function Footer() {
           </div>
           <div className="footer__links">
             {getFooterLinks().map(([name, items]) => (
-              <nav className="footer__group">
+              <nav key={name} className="footer__group">
                 <h3 className="footer__title">{name}</h3>
                 <ul className={name === 'Community' ? 'footer__social-list' : 'footer__list'}>
                   {items.map(([text, href, className]) => (
-                    <li className={name === 'Community' ? 'footer__social-item' : 'footer__item'}>
+                    <li
+                      key={text}
+                      className={name === 'Community' ? 'footer__social-item' : 'footer__item'}
+                    >
                       <a
                         className={
                           name === 'Community'
@@ -47,14 +50,14 @@ export default function Footer() {
         <div className="footer__bottom">
           {textBottom.map((text) => {
             return text === 'RS School' || text === '@student-nickname' ? (
-              <a className="footer__bottom-link" href="https://app.rs.school/">
+              <a key={text} className="footer__bottom-link" href="https://app.rs.school/">
                 <div
                   className={`footer__bottom-icon footer__bottom-icon_${text.replace('@', '').split(' ', 1)[0]}`}
                 ></div>
                 <span>{text}</span>
               </a>
             ) : (
-              <span>{text}</span>
+              <span key={text}>{text}</span>
             );
           })}
         </div>
