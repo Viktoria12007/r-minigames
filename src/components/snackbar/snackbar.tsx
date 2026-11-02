@@ -15,7 +15,11 @@ export default function Snackbar({ id, text, variant, onClose }: ISnackbarProper
   return (
     <div className="snackbar" role="status" aria-live="polite" data-variant={variant}>
       <p className="snackbar__message">{text}</p>
-      <button className="snackbar__close" aria-label="Dismiss notification" onClick={() => onClose(id)}>
+      <button
+        className="snackbar__close"
+        aria-label="Dismiss notification"
+        onClick={() => onClose(id)}
+      >
         ×
       </button>
     </div>
