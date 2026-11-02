@@ -34,7 +34,7 @@ export default function Leaderboard() {
 
   return (
     <section className="leaderboard container" aria-labelledby="leaderboard-title">
-      <h2 className="title">
+      <h2 className="title" id="leaderboard-title">
         <span>Top Players </span>
         <span className="leaderboard__title_hide">This Week</span>
       </h2>
