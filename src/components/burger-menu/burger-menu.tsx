@@ -19,7 +19,7 @@ export default function BurgerMenu() {
       <nav className="burger-menu__navigation" aria-label="Primary navigation">
         <ul className="burger-menu__list">
           {getHeaderLinks().map((link) => (
-            <li className="burger-menu__item">
+            <li key={link.text} className="burger-menu__item">
               <a className={`burger-menu__link ${link.className}`} href={link.href}>
                 {link.text}
               </a>
