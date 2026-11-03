@@ -25,11 +25,7 @@ export default function SkeletonLeaderboard({ status, retry }: ISkeletonLeaderbo
     }
     case 'empty': {
       content = (
-        <div
-          className={`leaderboard__state leaderboard__state_${status}`}
-          role="status"
-          aria-label="Loading top players"
-        >
+        <div className={`leaderboard__state leaderboard__state_${status}`} role="status">
           <p className="leaderboard__state-title">No top players yet</p>
           <p className="leaderboard__state-text">Player scores will appear here soon.</p>
         </div>
@@ -38,11 +34,7 @@ export default function SkeletonLeaderboard({ status, retry }: ISkeletonLeaderbo
     }
     case 'error': {
       content = (
-        <div
-          className={`leaderboard__state leaderboard__state_${status}`}
-          role="status"
-          aria-label="Loading top players"
-        >
+        <div className={`leaderboard__state leaderboard__state_${status}`} role="alert">
           <p className="leaderboard__state-title">Could not load top players</p>
           <p className="leaderboard__state-text">Please check your connection and try again.</p>
           <button className="leaderboard__retry" onClick={retry}>
