@@ -1,12 +1,12 @@
 ﻿@use './variables' as *;
 @use './fonts' as *;
 
-@use '../components/header/header';
+//@use '../components/header/header';
 //@use '../components/hero/hero';
 //@use '../components/games/games';
 //@use '../components/leaderboard/leaderboard';
 //@use '../components/developer/developer';
-@use '../components/footer/footer';
+//@use '../components/footer/footer';
 //@use '../components/auth/auth';
 //@use '../components/intro/intro';
 //@use '../components/cards/cards';
@@ -60,19 +60,7 @@ p {
   margin: 0;
 }
 
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 1;
-}
-
-.main {
-  flex: 1;
-}
-
 .container {
-  width: 100%;
   max-width: $content-width;
   margin-left: auto;
   margin-right: auto;
