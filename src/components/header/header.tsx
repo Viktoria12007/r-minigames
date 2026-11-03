@@ -2,16 +2,9 @@ import getLinks from '../../shared/get-header-links.ts';
 import Logo from '../logo/logo.tsx';
 import Profile from '../profile/profile.tsx';
 import { checkAppSession } from '../../shared/session.ts';
-import { useState } from 'react';
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
   const session = checkAppSession().session;
-
-  function toggleBurgerMenu() {
-    setIsOpen(!isOpen);
-    document.querySelector('.burger-menu')?.classList.toggle('burger-menu_open');
-  }
   return (
     <header className="header container">
       <Logo />
@@ -30,21 +23,16 @@ export default function Header() {
         {session ? (
           <>
             <Profile session={session} />
-            <button className="header__button button button_ghost">Log Out</button>
+            <button className="button button_ghost">Log Out</button>
           </>
         ) : (
           <>
-            <button className="header__button button button_ghost">Log In</button>
-            <button className="header__button button">Sign Up</button>
+            <button className="button button_ghost">Log In</button>
+            <button className="button">Sign Up</button>
           </>
         )}
       </div>
-      <button
-        className="burger"
-        aria-label="Open menu"
-        aria-expanded={isOpen}
-        onClick={toggleBurgerMenu}
-      >
+      <button className="burger" aria-label="Open menu" aria-expanded="false">
         <span></span>
         <span></span>
         <span></span>
