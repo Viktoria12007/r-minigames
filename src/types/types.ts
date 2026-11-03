@@ -30,3 +30,11 @@ export interface SnackbarData {
   text: string;
   variant: SnackbarVariant;
 }
+
+export type FeaturedGame = {
+  slug: string;
+  name: string;
+  cardImage: string;
+  rating: number;
+  likesCount: number;
+};
