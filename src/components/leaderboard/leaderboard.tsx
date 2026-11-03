@@ -9,7 +9,7 @@ const columns = ['Rank', 'Player', 'Games', 'Total', 'Streak', 'Favorite Game'];
 export default function Leaderboard() {
   const { showSnackbar } = useSnackbar();
   const [status, setStatus] = useState<Status | null>('loading');
-  const [leaders, setLeaders] = useState<Leader[] | null>(null);
+  const [leaders, setLeaders] = useState<Leader[]>([]);
 
   const fetchLeaders = useCallback(() => {
     void getApi<Leader[]>('/leaderboard')
@@ -66,7 +66,7 @@ export default function Leaderboard() {
                 </tr>
               </thead>
               <tbody className="leaderboard__tbody">
-                {leaders?.map((leader, index) => (
+                {leaders.map((leader, index) => (
                   <tr key={index}>
                     <td>{`# ${leader.rank}`}</td>
                     <td>
