@@ -9,7 +9,7 @@ import SkeletonGames from './skeleton-games.tsx';
 const autoplayDelay = 4000;
 
 function imageSource(path: string): string {
-  return /^(?:https?:)?\/\//.test(path) ? path : `${baseUrl}${path.replace(/^\//, '')}`;
+  return /^(?:https?:)?\/\//.test(path) ? path : `${baseUrl}/${path.replace(/^\//, '')}`;
 }
 
 function formatLikes(likes: number): string {
