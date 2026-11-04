@@ -15,7 +15,7 @@
     display: flex;
     gap: $size-5;
     font-size: $body-medium;
-    & .is-active {
+    & .active {
       color: $on-primary;
       font-weight: $bold;
     }
@@ -179,10 +179,6 @@
     gap: $size-3;
     color: $on-bg-footer;
     font-weight: $medium;
-    & .is-active {
-      color: $primary;
-      font-weight: $bold;
-    }
   }
   &__link {
     transition: $transition;
@@ -191,7 +187,7 @@
       color: $primary;
       text-decoration: underline;
     }
-    &.is-active {
+    &.active {
       color: $primary;
       font-weight: $bold;
     }
