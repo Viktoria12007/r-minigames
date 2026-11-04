@@ -110,7 +110,7 @@ export default function Games() {
   };
 
   return (
-    <section className="games container" aria-labelledby="games-title">
+    <section className="games" aria-labelledby="games-title">
       <div className="games__heading">
         <h2 className="title" id="games-title">
           New Games
