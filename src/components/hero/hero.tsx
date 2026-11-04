@@ -1,8 +1,8 @@
-import { baseUrl } from '../../shared/base-url.ts';
+import { Link } from 'react-router';
 
 export default function Hero() {
   return (
-    <section className="hero container" aria-labelledby="hero-title">
+    <section className="hero" aria-labelledby="hero-title">
       <div className="hero__art" aria-hidden="true"></div>
       <div className="hero__card">
         <h1 className="hero__title" id="hero-title">
@@ -12,9 +12,9 @@ export default function Hero() {
           Discover hundreds of curated casual mini-games. Play instantly in your browser — puzzle,
           match 3, farm, and board classics.
         </p>
-        <a className="hero__button button" href={`${baseUrl}library`}>
+        <Link className="hero__button button" to="library">
           Browse Library
-        </a>
+        </Link>
       </div>
     </section>
   );
