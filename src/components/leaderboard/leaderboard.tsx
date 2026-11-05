@@ -8,7 +8,7 @@ const columns = ['Rank', 'Player', 'Games', 'Total', 'Streak', 'Favorite Game'];
 
 export default function Leaderboard() {
   const { showSnackbar } = useSnackbar();
-  const [status, setStatus] = useState<Status | null>('loading');
+  const [status, setStatus] = useState<Status>('loading');
   const [leaders, setLeaders] = useState<Leader[]>([]);
 
     const controllerReference = useRef<AbortController | null>(null);
@@ -24,7 +24,7 @@ export default function Leaderboard() {
           if (controller.signal.aborted) return;
 
         setLeaders(data);
-        setStatus(data.length === 0 ? 'empty' : null);
+        setStatus(data.length === 0 ? 'empty' : 'success');
       })
       .catch(() => {
           if (controller.signal.aborted) return;
@@ -57,9 +57,7 @@ export default function Leaderboard() {
         <span className="leaderboard__title_hide">This Week</span>
       </h2>
       <div className="leaderboard__content">
-        {status ? (
-          <SkeletonLeaderboard status={status} retry={status === 'error' ? retry : undefined} />
-        ) : (
+        {status === 'success' ? (
           <div className="leaderboard__table-wrap">
             <table className="leaderboard__table">
               <thead className="leaderboard__thead">
@@ -119,6 +117,8 @@ export default function Leaderboard() {
               </tbody>
             </table>
           </div>
+        ) : (
+          <SkeletonLeaderboard status={status} retry={status === 'error' ? retry : undefined} />
         )}
       </div>
     </section>

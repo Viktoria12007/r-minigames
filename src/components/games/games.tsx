@@ -22,7 +22,7 @@ function visibleDistance(): number {
 
 export default function Games() {
   const { showSnackbar } = useSnackbar();
-  const [status, setStatus] = useState<Status | null>('loading');
+  const [status, setStatus] = useState<Status>('loading');
   const [games, setGames] = useState<FeaturedGame[]>([]);
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -63,7 +63,7 @@ export default function Games() {
           if (controller.signal.aborted) return;
 
         setGames(data);
-        setStatus(data.length === 0 ? 'empty' : null);
+        setStatus(data.length === 0 ? 'empty' : 'success');
       })
       .catch(() => {
           if (controller.signal.aborted) return;
@@ -133,7 +133,7 @@ export default function Games() {
         <h2 className="title" id="games-title">
           New Games
         </h2>
-        <div className="games__slider-controls" hidden={!!status}>
+        <div className="games__slider-controls" hidden={status !== 'success'}>
           <button
             className="games__button games__button_prev"
             aria-label="Previous games"
@@ -149,9 +149,7 @@ export default function Games() {
         </div>
       </div>
       <div className="games__content">
-        {status ? (
-          <SkeletonGames status={status} retry={status === 'error' ? retry : undefined} />
-        ) : (
+        {status === 'success' ? (
           <div
             className="games__track"
             aria-roledescription="carousel"
@@ -183,6 +181,8 @@ export default function Games() {
               );
             })}
           </div>
+        ) : (
+          <SkeletonGames status={status} retry={status === 'error' ? retry : undefined} />
         )}
       </div>
     </section>
