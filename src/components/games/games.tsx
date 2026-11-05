@@ -26,8 +26,10 @@ export default function Games() {
   const [games, setGames] = useState<FeaturedGame[]>([]);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [pointerStart, setPointerStart] = useState<{ x: number; y: number } | undefined>(undefined);
+
+    const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+    const controllerReference = useRef<AbortController | null>(null);
 
   const visible = visibleDistance();
 
@@ -51,15 +53,29 @@ export default function Games() {
   }, [clearTimer, games.length, move]);
 
   const fetchGames = useCallback(() => {
-    void getApi<FeaturedGame[]>('/games?featured=true')
+      controllerReference.current?.abort();
+
+      const controller = new AbortController();
+      controllerReference.current = controller;
+
+    void getApi<FeaturedGame[]>('/games?featured=true', controller.signal)
       .then(({ data }) => {
+          if (controller.signal.aborted) return;
+
         setGames(data);
         setStatus(data.length === 0 ? 'empty' : null);
       })
       .catch(() => {
+          if (controller.signal.aborted) return;
+
         setStatus('error');
         showSnackbar('Featured games could not be loaded. Please try again.', 'error');
-      });
+      })
+        .finally(() => {
+            if (controllerReference.current === controller) {
+                controllerReference.current = null;
+            }
+        })
   }, [showSnackbar]);
 
   const retry = () => {
@@ -69,6 +85,8 @@ export default function Games() {
 
   useEffect(() => {
     fetchGames();
+
+    return () => controllerReference.current?.abort();
   }, [fetchGames]);
 
   useEffect(() => {
