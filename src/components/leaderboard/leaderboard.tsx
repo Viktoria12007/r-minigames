@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Leader, Status } from '../../types/types.ts';
 import { getApi } from '../../shared/api.ts';
 import SkeletonLeaderboard from './skeleton-leaderboard.tsx';
@@ -8,18 +8,34 @@ const columns = ['Rank', 'Player', 'Games', 'Total', 'Streak', 'Favorite Game'];
 
 export default function Leaderboard() {
   const { showSnackbar } = useSnackbar();
-  const [status, setStatus] = useState<Status | null>('loading');
+  const [status, setStatus] = useState<Status>('loading');
   const [leaders, setLeaders] = useState<Leader[]>([]);
 
+  const controllerReference = useRef<AbortController | null>(null);
+
   const fetchLeaders = useCallback(() => {
-    void getApi<Leader[]>('/leaderboard')
+    controllerReference.current?.abort();
+
+    const controller = new AbortController();
+    controllerReference.current = controller;
+
+    void getApi<Leader[]>('/leaderboard', controller.signal)
       .then(({ data }) => {
+        if (controller.signal.aborted) return;
+
         setLeaders(data);
-        setStatus(data.length === 0 ? 'empty' : null);
+        setStatus(data.length === 0 ? 'empty' : 'success');
       })
       .catch(() => {
+        if (controller.signal.aborted) return;
+
         setStatus('error');
         showSnackbar('Top players could not be loaded. Please try again.', 'error');
+      })
+      .finally(() => {
+        if (controllerReference.current === controller) {
+          controllerReference.current = null;
+        }
       });
   }, [showSnackbar]);
 
@@ -30,18 +46,18 @@ export default function Leaderboard() {
 
   useEffect(() => {
     fetchLeaders();
+
+    return () => controllerReference.current?.abort();
   }, [fetchLeaders]);
 
   return (
-    <section className="leaderboard container" aria-labelledby="leaderboard-title">
+    <section className="leaderboard" aria-labelledby="leaderboard-title">
       <h2 className="title" id="leaderboard-title">
         <span>Top Players </span>
         <span className="leaderboard__title_hide">This Week</span>
       </h2>
       <div className="leaderboard__content">
-        {status ? (
-          <SkeletonLeaderboard status={status} retry={status === 'error' ? retry : undefined} />
-        ) : (
+        {status === 'success' ? (
           <div className="leaderboard__table-wrap">
             <table className="leaderboard__table">
               <thead className="leaderboard__thead">
@@ -101,6 +117,8 @@ export default function Leaderboard() {
               </tbody>
             </table>
           </div>
+        ) : (
+          <SkeletonLeaderboard status={status} retry={status === 'error' ? retry : undefined} />
         )}
       </div>
     </section>

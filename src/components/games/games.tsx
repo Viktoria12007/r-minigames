@@ -9,7 +9,7 @@ import SkeletonGames from './skeleton-games.tsx';
 const autoplayDelay = 4000;
 
 function imageSource(path: string): string {
-  return /^(?:https?:)?\/\//.test(path) ? path : `${baseUrl}${path.replace(/^\//, '')}`;
+  return /^(?:https?:)?\/\//.test(path) ? path : `${baseUrl}/${path.replace(/^\//, '')}`;
 }
 
 function formatLikes(likes: number): string {
@@ -22,12 +22,14 @@ function visibleDistance(): number {
 
 export default function Games() {
   const { showSnackbar } = useSnackbar();
-  const [status, setStatus] = useState<Status | null>('loading');
+  const [status, setStatus] = useState<Status>('loading');
   const [games, setGames] = useState<FeaturedGame[]>([]);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const [pointerStart, setPointerStart] = useState<{ x: number; y: number } | undefined>(undefined);
+
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const controllerReference = useRef<AbortController | null>(null);
 
   const visible = visibleDistance();
 
@@ -51,14 +53,28 @@ export default function Games() {
   }, [clearTimer, games.length, move]);
 
   const fetchGames = useCallback(() => {
-    void getApi<FeaturedGame[]>('/games?featured=true')
+    controllerReference.current?.abort();
+
+    const controller = new AbortController();
+    controllerReference.current = controller;
+
+    void getApi<FeaturedGame[]>('/games?featured=true', controller.signal)
       .then(({ data }) => {
+        if (controller.signal.aborted) return;
+
         setGames(data);
-        setStatus(data.length === 0 ? 'empty' : null);
+        setStatus(data.length === 0 ? 'empty' : 'success');
       })
       .catch(() => {
+        if (controller.signal.aborted) return;
+
         setStatus('error');
         showSnackbar('Featured games could not be loaded. Please try again.', 'error');
+      })
+      .finally(() => {
+        if (controllerReference.current === controller) {
+          controllerReference.current = null;
+        }
       });
   }, [showSnackbar]);
 
@@ -69,6 +85,8 @@ export default function Games() {
 
   useEffect(() => {
     fetchGames();
+
+    return () => controllerReference.current?.abort();
   }, [fetchGames]);
 
   useEffect(() => {
@@ -110,12 +128,12 @@ export default function Games() {
   };
 
   return (
-    <section className="games container" aria-labelledby="games-title">
+    <section className="games" aria-labelledby="games-title">
       <div className="games__heading">
         <h2 className="title" id="games-title">
           New Games
         </h2>
-        <div className="games__slider-controls" hidden={!!status}>
+        <div className="games__slider-controls" hidden={status !== 'success'}>
           <button
             className="games__button games__button_prev"
             aria-label="Previous games"
@@ -131,9 +149,7 @@ export default function Games() {
         </div>
       </div>
       <div className="games__content">
-        {status ? (
-          <SkeletonGames status={status} retry={status === 'error' ? retry : undefined} />
-        ) : (
+        {status === 'success' ? (
           <div
             className="games__track"
             aria-roledescription="carousel"
@@ -165,6 +181,8 @@ export default function Games() {
               );
             })}
           </div>
+        ) : (
+          <SkeletonGames status={status} retry={status === 'error' ? retry : undefined} />
         )}
       </div>
     </section>

@@ -5,8 +5,11 @@ export type ApiResponse<T, M> = {
   meta: M;
 };
 
-export async function getApi<T, M = undefined>(path: string): Promise<ApiResponse<T, M>> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+export async function getApi<T, M = undefined>(
+  path: string,
+  signal?: AbortSignal,
+): Promise<ApiResponse<T, M>> {
+  const response = await fetch(`${API_BASE_URL}${path}`, { signal });
 
   if (!response.ok) {
     throw new Error(`Request failed with status ${response.status}`);
@@ -22,11 +25,13 @@ export async function getApi<T, M = undefined>(path: string): Promise<ApiRespons
 export async function postApi<T, M = undefined>(
   path: string,
   payload: Record<string, string>,
+  signal?: AbortSignal,
 ): Promise<ApiResponse<T, M>> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+    signal,
   });
 
   if (!response.ok) {

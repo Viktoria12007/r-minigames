@@ -1,6 +1,6 @@
 export default function Developer() {
   return (
-    <section className="developer container" aria-labelledby="developer-title">
+    <section className="developer" aria-labelledby="developer-title">
       <div className="developer__image"></div>
       <div className="developer__card">
         <h2 className="title developer__title" id="developer-title">

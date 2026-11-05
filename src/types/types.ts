@@ -21,7 +21,7 @@ export type Leader = {
   favoriteGameName: string;
 };
 
-export type Status = 'loading' | 'empty' | 'error';
+export type Status = 'loading' | 'empty' | 'error' | 'success';
 
 export type SnackbarVariant = 'success' | 'error';
 
@@ -37,4 +37,22 @@ export type FeaturedGame = {
   cardImage: string;
   rating: number;
   likesCount: number;
+};
+
+export type Category = { slug: string; label: string; isDefault: boolean };
+
+export type LibraryGame = {
+  slug: string;
+  name: string;
+  category: string;
+  price: string;
+  shortDescription: string;
+  rating: number;
+  likesCount: number;
+  cardImage: string;
+};
+
+export type GamesMeta = {
+  page: number;
+  totalPages: number;
 };

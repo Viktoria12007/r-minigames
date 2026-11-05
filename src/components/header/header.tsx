@@ -1,11 +1,14 @@
-import getLinks from '../../shared/get-header-links.ts';
 import Logo from '../logo/logo.tsx';
 import Profile from '../profile/profile.tsx';
 import { checkAppSession } from '../../shared/session.ts';
 import { useState } from 'react';
+import { Link, NavLink } from 'react-router';
+import useIsHomeActive from '../../hooks/use-is-home-active.ts';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const isHomeActive = useIsHomeActive();
+
   const session = checkAppSession().session;
 
   function toggleBurgerMenu() {
@@ -17,13 +20,30 @@ export default function Header() {
       <Logo />
       <nav className="header__nav" aria-label="Primary navigation">
         <ul className="header__list">
-          {getLinks().map((link) => (
-            <li key={link.href} className="header__item">
-              <a href={link.href} className={`header__link ${link.className}`}>
-                {link.text}
-              </a>
-            </li>
-          ))}
+          <li className="header__item">
+            <Link
+              to="/"
+              className={`header__link ${isHomeActive ? 'active' : ''}`}
+              aria-current={isHomeActive ? 'page' : undefined}
+            >
+              Home
+            </Link>
+          </li>
+          <li className="header__item">
+            <NavLink to="library" className="header__link">
+              Library
+            </NavLink>
+          </li>
+          <li className="header__item">
+            <NavLink to="tournaments" className="header__link">
+              Tournaments
+            </NavLink>
+          </li>
+          <li className="header__item">
+            <NavLink to="community" className="header__link">
+              Community
+            </NavLink>
+          </li>
         </ul>
       </nav>
       <div className="header__actions">
