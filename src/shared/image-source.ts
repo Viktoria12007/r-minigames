@@ -1,7 +1,5 @@
-import {baseUrl} from "./base-url.ts";
+import { baseUrl } from './base-url.ts';
 
 export function imageSource(path: string): string {
-    return /^(?:https?:)?\/\//.test(path)
-        ? path
-        : `${baseUrl}/${path.replace(/^\//, '')}`;
+  return /^(?:https?:)?\/\//.test(path) ? path : `${baseUrl}/${path.replace(/^\//, '')}`;
 }

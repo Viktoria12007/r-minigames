@@ -27,7 +27,7 @@ export default function SkeletonCards({ status, retry }: ISkeletonCardsPropertie
       content = (
         <div className={`library-list__state library-list__state_${status}`} role="status">
           <p className="library-list__state-title">Data Not Found</p>
-          <p className='library-list__state-text'>Try another category or sort option.</p>
+          <p className="library-list__state-text">Try another category or sort option.</p>
         </div>
       );
       break;

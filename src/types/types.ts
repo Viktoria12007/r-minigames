@@ -42,17 +42,17 @@ export type FeaturedGame = {
 export type Category = { slug: string; label: string; isDefault: boolean };
 
 export type LibraryGame = {
-    slug: string;
-    name: string;
-    category: string;
-    price: string;
-    shortDescription: string;
-    rating: number;
-    likesCount: number;
-    cardImage: string;
+  slug: string;
+  name: string;
+  category: string;
+  price: string;
+  shortDescription: string;
+  rating: number;
+  likesCount: number;
+  cardImage: string;
 };
 
 export type GamesMeta = {
-    page: number;
-    totalPages: number;
+  page: number;
+  totalPages: number;
 };

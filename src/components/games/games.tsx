@@ -28,8 +28,8 @@ export default function Games() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [pointerStart, setPointerStart] = useState<{ x: number; y: number } | undefined>(undefined);
 
-    const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-    const controllerReference = useRef<AbortController | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const controllerReference = useRef<AbortController | null>(null);
 
   const visible = visibleDistance();
 
@@ -53,29 +53,29 @@ export default function Games() {
   }, [clearTimer, games.length, move]);
 
   const fetchGames = useCallback(() => {
-      controllerReference.current?.abort();
+    controllerReference.current?.abort();
 
-      const controller = new AbortController();
-      controllerReference.current = controller;
+    const controller = new AbortController();
+    controllerReference.current = controller;
 
     void getApi<FeaturedGame[]>('/games?featured=true', controller.signal)
       .then(({ data }) => {
-          if (controller.signal.aborted) return;
+        if (controller.signal.aborted) return;
 
         setGames(data);
         setStatus(data.length === 0 ? 'empty' : 'success');
       })
       .catch(() => {
-          if (controller.signal.aborted) return;
+        if (controller.signal.aborted) return;
 
         setStatus('error');
         showSnackbar('Featured games could not be loaded. Please try again.', 'error');
       })
-        .finally(() => {
-            if (controllerReference.current === controller) {
-                controllerReference.current = null;
-            }
-        })
+      .finally(() => {
+        if (controllerReference.current === controller) {
+          controllerReference.current = null;
+        }
+      });
   }, [showSnackbar]);
 
   const retry = () => {
