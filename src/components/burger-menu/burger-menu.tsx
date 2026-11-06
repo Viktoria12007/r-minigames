@@ -75,7 +75,7 @@ export default function BurgerMenu({ isOpen, onClose }: IBurgerMenuProperties) {
       </nav>
       <div className="burger-menu__actions">
         {session ? (
-            <button className="burger-menu__button button button_ghost-white">Log Out</button>
+          <button className="burger-menu__button button button_ghost-white">Log Out</button>
         ) : (
           <>
             <button className="burger-menu__button button button_ghost-white" onClick={onLogin}>

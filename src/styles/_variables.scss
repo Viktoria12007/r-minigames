@@ -85,5 +85,12 @@ $level-3: 8px 8px $on-primary;
 
 $border-primary: 2px solid $on-primary;
 $transition: all 0.3s ease;
-$modal-window-transition: opacity 250ms ease, transform 250ms ease, display 250ms allow-discrete, overlay 250ms allow-discrete;
-$backdrop-transition: background-color 250ms ease, display 250ms allow-discrete, overlay 250ms allow-discrete;
+$modal-window-transition:
+  opacity 250ms ease,
+  transform 250ms ease,
+  display 250ms allow-discrete,
+  overlay 250ms allow-discrete;
+$backdrop-transition:
+  background-color 250ms ease,
+  display 250ms allow-discrete,
+  overlay 250ms allow-discrete;
