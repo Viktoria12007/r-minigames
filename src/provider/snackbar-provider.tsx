@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import SnackbarContainer from '../components/snackbar-container/snackbar-container.tsx';
-import { SnackbarContext } from '../context/snackbar-context.tsx';
+import { SnackbarContext } from '../context/snackbar-context.ts';
 import type { SnackbarData, SnackbarVariant } from '../types/types.ts';
 
 export function SnackbarProvider({ children }: { children: ReactNode }) {
