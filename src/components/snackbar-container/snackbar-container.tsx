@@ -8,12 +8,15 @@ interface ISnackbarContainerProperties {
 }
 
 export default function SnackbarContainer({ snackbars, onClose }: ISnackbarContainerProperties) {
-  return createPortal(
-    <div className="snackbar-list">
-      {snackbars.map((snackbar) => (
-        <Snackbar key={snackbar.id} {...snackbar} onClose={onClose} />
-      ))}
-    </div>,
-    document.body,
-  );
+  const app = document.querySelector<HTMLDivElement>('#app');
+  return app
+    ? createPortal(
+        <div className="snackbar-list">
+          {snackbars.map((snackbar) => (
+            <Snackbar key={snackbar.id} {...snackbar} onClose={onClose} />
+          ))}
+        </div>,
+        app,
+      )
+    : undefined;
 }
