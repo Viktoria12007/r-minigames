@@ -1,0 +1,374 @@
+@use '../../styles/variables' as *;
+
+.game-details {
+  &__hero {
+    position: relative;
+    height: 220px;
+  }
+  &__hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  &__wrap {
+    padding: $size-3;
+  }
+  &__title {
+    color: $on-primary;
+    font-size: $display-medium;
+  }
+  &__stats {
+    display: inline-flex;
+    margin-left: $size-2;
+    color: $on-primary;
+    font-size: $body-small;
+    font-weight: $bold;
+  }
+  &__rating {
+    color: $primary;
+    margin-right: $size-2;
+  }
+  &__likes {
+    color: $like;
+  }
+  &__description {
+    margin-top: $size-3;
+    color: $on-bg;
+    font-size: $body-medium;
+    line-height: 1.26;
+  }
+  &__badges {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $size-2;
+    margin-top: $size-3;
+  }
+  &__badge {
+    display: grid;
+    gap: $size-1;
+    min-width: 0;
+    padding: $btn-small;
+    border: 1px solid $outline-variant;
+    border-radius: $corner-small;
+    background-color: $white;
+    box-shadow: 3px 3px 0 $on-primary;
+  }
+  &__badge-label {
+    color: $on-bg;
+    font-size: $label-medium;
+    text-transform: capitalize;
+  }
+  &__badge-value {
+    overflow: hidden;
+    color: $on-primary;
+    font-size: $body-small;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  &__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $size-2;
+    margin-top: $size-3;
+  }
+  &__play,
+  &__favorite {
+    border-radius: $corner-medium;
+    color: $on-primary;
+    font-size: $body-medium;
+    font-weight: $bold;
+    cursor: pointer;
+    box-shadow: $level-1;
+    transition: $transition;
+  }
+  &__play {
+    background-color: $primary;
+    border: $border-primary;
+  }
+  &__favorite {
+    display: inline-flex;
+    gap: $size-1;
+    align-items: center;
+    justify-content: center;
+    background-color: $white;
+    border: 1px solid $outline-variant;
+    &:hover,
+    &:active {
+      background: $surface;
+    }
+    &.is-favorite {
+      color: $like;
+      background-color: $transparent;
+    }
+  }
+  &__records,
+  &__comments {
+    margin-top: $size-3;
+  }
+  &__section-title {
+    color: $on-primary;
+    font-size: $body-medium;
+  }
+  &__record-list {
+    display: grid;
+    gap: $size-1;
+    margin-top: $size-2;
+  }
+  &__record {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr) auto auto;
+    gap: $size-2;
+    align-items: center;
+    min-height: 49px;
+    padding: $size-2;
+    border-radius: $corner-small;
+    background-color: $white;
+    color: $on-primary;
+    font-size: $body-small;
+  }
+  &__record-medal {
+    font-size: $label-extra-large;
+  }
+  &__record-score {
+    white-space: nowrap;
+  }
+  &__record-time,
+  &__comment-time {
+    color: $on-bg;
+    font-size: $label-medium;
+    white-space: nowrap;
+  }
+  &__form {
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr) 40px;
+    gap: $size-2;
+    align-items: center;
+    margin-top: $size-2;
+  }
+  &__avatar {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border: 1px solid $on-primary;
+    border-radius: $corner-full;
+    color: $on-primary;
+    font-size: $label-medium;
+    &_current {
+      width: 40px;
+      height: 40px;
+      background-color: $primary;
+      font-size: $label-large;
+      font-weight: $bold;
+      border: 1.5px solid $on-primary;
+    }
+    &_0 {
+      background-color: $avatar-random-3;
+    }
+    &_1 {
+      background-color: $primary;
+    }
+    &_2 {
+      background-color: $avatar-random-1;
+    }
+    &_3 {
+      background-color: $avatar-random-4;
+    }
+    &_4 {
+      background-color: $avatar-random-5;
+    }
+  }
+  &__textarea {
+    width: 100%;
+    height: 48px;
+    min-height: 48px;
+    max-height: 88px;
+    padding: $btn-small;
+    resize: none;
+    overflow-y: auto;
+    border: 1px solid $on-primary;
+    border-radius: $corner-small;
+    color: $on-primary;
+    font: inherit;
+    font-size: $body-small;
+    line-height: 20px;
+    background-color: $white;
+    transition: $transition;
+    &::placeholder {
+      color: $text-placeholder;
+    }
+    &:focus-visible {
+      background-color: $surface-low;
+      outline: none;
+    }
+    &_wide {
+      grid-column: span 2;
+    }
+  }
+  &__submit {
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    padding: $btn-icon;
+    border: 0;
+    border-radius: $corner-small;
+    color: $white;
+    font-size: $display-small;
+    line-height: 1;
+    background: $bg-footer-low;
+    cursor: pointer;
+    transition: $transition;
+    &:hover,
+    &:active {
+      background-color: $tertiary;
+    }
+    &:disabled {
+      color: $on-bg;
+      background-color: $outline-variant;
+    }
+    &[aria-busy='true'] {
+      cursor: progress;
+      opacity: 0.7;
+    }
+  }
+  &__comment-list {
+    display: grid;
+    gap: $size-2;
+    margin-top: $size-2;
+  }
+  &__comment {
+    padding: $size-2;
+    border-radius: $corner-medium;
+    background-color: $white;
+    box-shadow: 3px 3px $on-primary;
+  }
+  &__comment-header {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    gap: $size-1;
+    align-items: center;
+  }
+  &__comment-author {
+    overflow: hidden;
+    color: $on-primary;
+    font-size: $body-small;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  &__comment-text {
+    margin-top: $size-1;
+    color: $on-primary;
+    font-size: $body-small;
+    line-height: 1.3;
+  }
+  &__like {
+    padding: 0;
+    margin-top: $size-1;
+    border: 0;
+    color: $on-primary;
+    font-size: $label-medium;
+    font-weight: $bold;
+    background-color: transparent;
+    cursor: pointer;
+    transition: $transition;
+    &:hover,
+    &:active {
+      background-color: $surface;
+    }
+    &.is-liked {
+      color: $like;
+    }
+    &.is-loading {
+      cursor: progress;
+      opacity: 0.7;
+    }
+  }
+  &__state {
+    display: grid;
+    gap: $size-1;
+    padding: $size-3;
+    margin-top: $size-3;
+    border: 1px solid $outline-variant;
+    border-radius: $corner-medium;
+    background-color: $white;
+    &_error {
+      border-color: $error;
+    }
+  }
+  &__state-title {
+    color: $on-primary;
+    font-size: $body-medium;
+    font-weight: $bold;
+  }
+  &__state-text {
+    color: $on-bg;
+    font-size: $body-small;
+  }
+  &__retry {
+    justify-self: start;
+    padding: $btn-small;
+    border: $border-primary;
+    border-radius: $corner-small;
+    color: $on-primary;
+    font: inherit;
+    font-weight: $bold;
+    background-color: $primary;
+    cursor: pointer;
+  }
+  &__skeleton {
+    height: 22px;
+    border-radius: $corner-small;
+    background: linear-gradient(90deg, $surface-low 25%, $surface 50%, $surface-low 75%);
+    background-size: 200% 100%;
+    animation: game-details-skeleton 1.2s ease-in-out infinite;
+    &:first-child {
+      height: 160px;
+    }
+  }
+}
+
+@keyframes game-details-skeleton {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (min-width: 601px) {
+  .game-details__title,
+  .game-details__stats {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+@media (max-width: 600px) {
+  .game-details {
+    align-items: start;
+    &__hero {
+      height: 220px;
+    }
+    &__stats {
+      display: flex;
+      margin-top: $size-1;
+      margin-left: 0;
+    }
+    &__badges {
+      grid-template-columns: repeat(2, 1fr);
+      gap: $size-2;
+    }
+    &__actions {
+      grid-template-columns: minmax(0, 1fr) 52px;
+    }
+    &__favorite {
+      font-size: 30px;
+    }
+
+    &__favorite-label {
+      display: none;
+    }
+    &__record {
+      grid-template-columns: 18px minmax(0, 1fr) auto auto;
+    }
+  }
+}
