@@ -1,0 +1,79 @@
+@use '../../styles/variables' as *;
+
+.modal-window {
+  padding: 0;
+  overflow: hidden;
+  background-color: $transparent;
+  border: 3px solid $on-bg-low;
+  border-radius: $corner-extra-large;
+  box-shadow: $level-3;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  transition: $modal-window-transition;
+  &_wide {
+    border: 1px solid $outline-variant;
+  }
+  &[open] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+  }
+  &::backdrop {
+    background-color: rgb(0 0 0 / 0);
+    transition: $backdrop-transition;
+  }
+  &[open]::backdrop {
+    background-color: $backdrop-color;
+
+    @starting-style {
+      background-color: rgb(0 0 0 / 0);
+    }
+  }
+  &__content {
+    width: 420px;
+    max-width: 100%;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    border-radius: $corner-extra-large;
+    background-color: $bg;
+    &_wide {
+      width: 600px;
+      max-height: calc(100vh - 32px);
+    }
+  }
+  &__close {
+    z-index: 1;
+    position: absolute;
+    top: $size-2;
+    right: $size-2;
+    display: grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: $border-primary;
+    border-radius: $corner-full;
+    box-shadow: 2px 2px 0 $on-primary;
+    color: $on-primary;
+    font-size: $headline-medium;
+    font-weight: $regular;
+    line-height: 1;
+    background-color: $white;
+    cursor: pointer;
+    transition: $transition;
+    &:hover,
+    &:active {
+      background-color: $surface;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal-window,
+  .modal-window::backdrop {
+    transition: none;
+  }
+}

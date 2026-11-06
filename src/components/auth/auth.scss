@@ -1,0 +1,145 @@
+﻿@use '../../styles/variables' as *;
+.auth {
+  padding: $size-8 $size-4 $size-4 $size-4;
+  &__tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    border: 2.5px solid $on-primary;
+    border-radius: $corner-medium;
+    margin-bottom: $size-3;
+    & .is-active {
+      background-color: $bg-footer-low;
+      color: $white;
+    }
+  }
+  &__tabs-button {
+    padding: 14.5px;
+    border: none;
+    background-color: $white;
+    color: $on-bg;
+    font-weight: $bold;
+    font-size: $body-medium;
+    cursor: pointer;
+  }
+  &__title {
+    font-size: $headline-medium;
+    color: $on-primary;
+    margin-bottom: $size-1;
+  }
+  &__content-lead {
+    font-size: $body-small;
+    color: $on-bg;
+    margin-bottom: $size-3;
+  }
+  &__label {
+    display: grid;
+    gap: $size-1;
+    font-size: 20px;
+    font-weight: 800;
+    color: $on-bg;
+  }
+  &__input {
+    width: 100%;
+    padding: $size-2;
+    border: $border-primary;
+    border-radius: $corner-small;
+    color: $on-bg;
+    font-size: $body-small;
+    margin-bottom: $size-1;
+    &:focus {
+      outline: 3px solid #998dff;
+    }
+  }
+  &__error {
+    min-height: 1.2em;
+    color: #b42318;
+    font-size: $label-medium;
+    font-weight: $regular;
+    margin-bottom: $body-medium;
+  }
+  &__forgot {
+    display: block;
+    text-align: right;
+    font-size: $body-small;
+    font-weight: $bold;
+    color: $on-primary;
+    text-decoration: underline;
+    margin-bottom: $size-3;
+  }
+  &__button {
+    width: 100%;
+    font-size: $body-medium;
+    padding: 16.5px;
+    border-radius: $corner-medium;
+    border: 2.5px solid $on-primary;
+    box-shadow: 0 4px 0 0 $on-primary;
+    margin-bottom: $size-2;
+  }
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: $size-2;
+    color: $on-bg;
+    font-weight: $bold;
+    font-size: $label-medium;
+    text-align: center;
+    margin-bottom: $size-2;
+    &::before {
+      content: '';
+      width: 100%;
+      opacity: 0.2;
+      border: 1px solid $on-primary;
+    }
+    &::after {
+      content: '';
+      width: 100%;
+      opacity: 0.2;
+      border: 1px solid $on-primary;
+    }
+  }
+  &__button-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $size-2;
+    width: 100%;
+    font-size: $body-medium;
+    padding: 16.5px;
+    border-radius: $corner-medium;
+    border: 2.5px solid $on-primary;
+    box-shadow: 0 4px 0 0 $on-primary;
+    background-color: $white;
+    margin-bottom: $size-2;
+  }
+  &__google-icon {
+    width: 24px;
+    height: 24px;
+    background-image: url('../../assets/images/google.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+  }
+  &__switch {
+    text-align: center;
+    font-size: $body-small;
+    color: $on-bg;
+    &-button {
+      padding: 0;
+      border: 0;
+      border-bottom: 2px solid currentColor;
+      background-color: transparent;
+      color: $on-primary;
+      font-weight: $bold;
+      cursor: pointer;
+    }
+  }
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #c7c5c9;
+}

@@ -7,10 +7,11 @@
 @use '../components/leaderboard/leaderboard';
 @use '../components/developer/developer';
 @use '../components/footer/footer';
-//@use '../components/auth/auth';
+@use '../components/auth/auth';
 @use '../components/intro/intro';
 @use '../components/cards/cards';
-//@use '../components/details-dialog/detailsDialog';
+@use '../components/game-details/game-details';
+@use '../components/modal-window/modal-window';
 @use '../components/pagination/pagination';
 @use '../components/snackbar/snackbar';
 @use 'not-found';
@@ -21,6 +22,10 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+html:has(dialog:modal) {
+  overflow: hidden;
 }
 
 body {

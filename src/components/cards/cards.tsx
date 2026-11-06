@@ -7,12 +7,16 @@ import { imageSource } from '../../shared/image-source.ts';
 import { getApi } from '../../shared/api.ts';
 import { useLocation } from 'react-router';
 import Pagination from '../pagination/pagination.tsx';
+import useModalWindow from '../../hooks/use-modal-window.ts';
+import GameDetails from '../game-details/game-details.tsx';
 
 const pageSize = 6;
 
 export default function Cards() {
   const { search } = useLocation();
   const { showSnackbar } = useSnackbar();
+  const { openModalWindow } = useModalWindow();
+
   const [status, setStatus] = useState<Status>('loading');
   const [totalPages, setTotalPages] = useState<number>(0);
   const [games, setGames] = useState<LibraryGame[]>([]);
@@ -91,7 +95,14 @@ export default function Cards() {
                   <span className="library-card__rating">{game.rating}</span>
                   <span className="library-card__likes">{formatLikes(game.likesCount)}</span>
                 </div>
-                <button className="library-card__details button">Details</button>
+                <button
+                  className="library-card__details button"
+                  onClick={() =>
+                    openModalWindow({ children: <GameDetails selectedGame={game.slug} /> })
+                  }
+                >
+                  Details
+                </button>
               </div>
             </article>
           ))

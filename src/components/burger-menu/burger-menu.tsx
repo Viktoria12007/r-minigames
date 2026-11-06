@@ -2,24 +2,50 @@ import Logo from '../logo/logo.tsx';
 import { checkAppSession } from '../../shared/session.ts';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
+import useModalWindow from '../../hooks/use-modal-window.ts';
+import Auth from '../auth/auth.tsx';
+import type { MouseEvent } from 'react';
 
-function closeBurgerMenu() {
-  document.querySelector('.burger-menu_open')?.classList.remove('burger-menu_open');
+interface IBurgerMenuProperties {
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export default function BurgerMenu() {
+export default function BurgerMenu({ isOpen, onClose }: IBurgerMenuProperties) {
+  const { openModalWindow } = useModalWindow();
   const isHomeActive = useIsHomeActive();
   const session = checkAppSession().session;
 
+  function onLogin() {
+    openModalWindow({ children: <Auth outAuthMode="login" />, wide: false });
+    onClose();
+  }
+
+  function onSignup() {
+    openModalWindow({ children: <Auth outAuthMode="register" />, wide: false });
+    onClose();
+  }
+
+  function onNavClick(event: MouseEvent<HTMLElement>) {
+    const target = event.target;
+    if (target instanceof Element && target.closest('a[href]')) {
+      onClose();
+    }
+  }
+
   return (
-    <div className="burger-menu">
+    <div className={`burger-menu ${isOpen ? 'is-open' : ''}`}>
       <div className="burger-menu__header">
         <Logo />
-        <button className="close-burger" aria-label="Close menu" onClick={closeBurgerMenu}>
+        <button className="close-burger" aria-label="Close menu" onClick={onClose}>
           <span />
         </button>
       </div>
-      <nav className="burger-menu__navigation" aria-label="Primary navigation">
+      <nav
+        className="burger-menu__navigation"
+        aria-label="Primary navigation"
+        onClick={(event) => onNavClick(event)}
+      >
         <ul className="burger-menu__list">
           <li className="burger-menu__item">
             <Link
@@ -49,13 +75,15 @@ export default function BurgerMenu() {
       </nav>
       <div className="burger-menu__actions">
         {session ? (
-          <>
-            <button className="burger-menu__button button button_ghost-white">Log Out</button>
-          </>
+          <button className="burger-menu__button button button_ghost-white">Log Out</button>
         ) : (
           <>
-            <button className="burger-menu__button button button_ghost-white">Log In</button>
-            <button className="burger-menu__button button">Sign Up</button>
+            <button className="burger-menu__button button button_ghost-white" onClick={onLogin}>
+              Log In
+            </button>
+            <button className="burger-menu__button button" onClick={onSignup}>
+              Sign Up
+            </button>
           </>
         )}
       </div>

@@ -4,17 +4,17 @@ import { checkAppSession } from '../../shared/session.ts';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
+import useModalWindow from '../../hooks/use-modal-window.ts';
+import Auth from '../auth/auth.tsx';
+import BurgerMenu from '../burger-menu/burger-menu.tsx';
 
 export default function Header() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { openModalWindow } = useModalWindow();
+  const [isOpenBurgerMenu, setIsOpenBurgerMenu] = useState(false);
   const isHomeActive = useIsHomeActive();
 
   const session = checkAppSession().session;
 
-  function toggleBurgerMenu() {
-    setIsOpen(!isOpen);
-    document.querySelector('.burger-menu')?.classList.toggle('burger-menu_open');
-  }
   return (
     <header className="header container">
       <Logo />
@@ -54,21 +54,38 @@ export default function Header() {
           </>
         ) : (
           <>
-            <button className="header__button button button_ghost">Log In</button>
-            <button className="header__button button">Sign Up</button>
+            <button
+              className="header__button button button_ghost"
+              data-auth="login"
+              onClick={() =>
+                openModalWindow({ children: <Auth outAuthMode="login" />, wide: false })
+              }
+            >
+              Log In
+            </button>
+            <button
+              className="header__button button"
+              data-auth="register"
+              onClick={() =>
+                openModalWindow({ children: <Auth outAuthMode="register" />, wide: false })
+              }
+            >
+              Sign Up
+            </button>
           </>
         )}
       </div>
       <button
         className="burger"
         aria-label="Open menu"
-        aria-expanded={isOpen}
-        onClick={toggleBurgerMenu}
+        aria-expanded={isOpenBurgerMenu}
+        onClick={() => setIsOpenBurgerMenu(!isOpenBurgerMenu)}
       >
         <span></span>
         <span></span>
         <span></span>
       </button>
+      <BurgerMenu isOpen={isOpenBurgerMenu} onClose={() => setIsOpenBurgerMenu(false)} />
     </header>
   );
 }

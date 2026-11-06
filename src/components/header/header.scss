@@ -26,16 +26,14 @@
   }
 }
 
-.header__profile,
-.burger-menu__profile {
+.header__profile {
   display: inline-flex;
   align-items: center;
   gap: $size-1;
   font-weight: $bold;
 }
 
-.header__profile-name,
-.burger-menu__profile-name {
+.header__profile-name {
   max-width: 12rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -44,16 +42,13 @@
 }
 
 .header__profile-avatar,
-.burger-menu__profile-avatar,
-.header__profile-avatar-image,
-.burger-menu__profile-avatar-image {
+.header__profile-avatar-image {
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
 }
 
-.header__profile-avatar,
-.burger-menu__profile-avatar {
+.header__profile-avatar {
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
@@ -64,8 +59,7 @@
   font-weight: $bold;
 }
 
-.header__profile-avatar-image,
-.burger-menu__profile-avatar-image {
+.header__profile-avatar-image {
   display: block;
   object-fit: cover;
 }
@@ -152,7 +146,7 @@
 }
 
 .burger-menu {
-  display: none;
+  display: flex;
   min-width: 320px;
   position: fixed;
   top: 0;
@@ -165,13 +159,24 @@
   font-size: $body-large;
   background: $bg-footer;
   border-bottom: none;
-  &_open {
-    display: none;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: $transition;
+  transform: translateX(-100%);
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    pointer-events: auto;
   }
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    & > .logo {
+      color: $white;
+    }
   }
   &__list {
     display: flex;
@@ -207,6 +212,7 @@
   border-radius: $corner-small;
   border: 2px solid $bg-footer-low;
   transition: $transition;
+  cursor: pointer;
   & span {
     position: relative;
     display: block;
@@ -253,19 +259,9 @@
   }
 
   .burger-menu {
-    &__header > .logo {
-      color: $white;
-    }
-    &_open {
-      display: flex;
-    }
     &__button.button_ghost-white {
       display: block;
     }
-  }
-
-  .burger-menu__header > .logo {
-    color: $white;
   }
 
   .header__profile,
