@@ -56,3 +56,22 @@ export type GamesMeta = {
   page: number;
   totalPages: number;
 };
+
+export type GameDetails = {
+  slug: string;
+  name: string;
+  heroImage: string;
+  rating: number;
+  likesCount: number;
+  isLikedByCurrentUser?: boolean;
+  fullDescription: string;
+  specs: Record<string, string>;
+  topRecords: Array<{
+    position: number;
+    playerName: string;
+    score: number;
+    achievedAt: string;
+  }>;
+};
+
+export type AuthMode = 'login' | 'register';
