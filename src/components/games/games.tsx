@@ -5,6 +5,8 @@ import type { FeaturedGame, Status } from '../../types/types.ts';
 import { getApi } from '../../shared/api.ts';
 import { baseUrl } from '../../shared/base-url.ts';
 import SkeletonGames from './skeleton-games.tsx';
+import useModalWindow from '../../hooks/use-modal-window.ts';
+import GameDetails from '../game-details/game-details.tsx';
 
 const autoplayDelay = 4000;
 
@@ -22,11 +24,13 @@ function visibleDistance(): number {
 
 export default function Games() {
   const { showSnackbar } = useSnackbar();
+  const { openModalWindow } = useModalWindow();
+
   const [status, setStatus] = useState<Status>('loading');
   const [games, setGames] = useState<FeaturedGame[]>([]);
-
   const [activeIndex, setActiveIndex] = useState(0);
   const [pointerStart, setPointerStart] = useState<{ x: number; y: number } | undefined>(undefined);
+  const [didSwipe, setDidSwipe] = useState(false);
 
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const controllerReference = useRef<AbortController | null>(null);
@@ -101,12 +105,13 @@ export default function Games() {
     return difference < -half ? difference + games.length : difference;
   };
 
-  const pointerDown = (event: PointerEvent) => {
+  const handlePointerDown = (event: PointerEvent) => {
     setPointerStart({ x: event.clientX, y: event.clientY });
+    setDidSwipe(false);
     clearTimer();
   };
 
-  const pointerUp = (event: PointerEvent) => {
+  const handlePointerUp = (event: PointerEvent) => {
     if (!pointerStart) return;
     const horizontal = event.clientX - pointerStart.x;
     const vertical = event.clientY - pointerStart.y;
@@ -116,16 +121,24 @@ export default function Games() {
       Math.abs(horizontal) > Math.abs(vertical) &&
       games.length > 1
     ) {
+      setDidSwipe(true);
       move(horizontal < 0 ? 1 : -1);
+      setTimeout(() => setDidSwipe(false), 0);
     } else {
       startTimer();
     }
   };
 
-  const pointerCancel = () => {
+  const handlePointerCancel = () => {
     setPointerStart(undefined);
     startTimer();
   };
+
+  function onCardClick(selectedGame: string) {
+    if (!didSwipe) {
+      openModalWindow({ children: <GameDetails selectedGame={selectedGame} /> });
+    }
+  }
 
   return (
     <section className="games" aria-labelledby="games-title">
@@ -153,9 +166,9 @@ export default function Games() {
           <div
             className="games__track"
             aria-roledescription="carousel"
-            onPointerDown={(event) => pointerDown(event)}
-            onPointerUp={(event) => pointerUp(event)}
-            onPointerCancel={pointerCancel}
+            onPointerDown={(event) => handlePointerDown(event)}
+            onPointerUp={(event) => handlePointerUp(event)}
+            onPointerCancel={handlePointerCancel}
           >
             {games.map((game, index) => {
               const offset = circularOffset(index);
@@ -170,6 +183,7 @@ export default function Games() {
                   data-size={distance === 0 ? 'large' : distance === 1 ? 'medium' : 'small'}
                   data-visible={String(distance <= visible)}
                   aria-hidden={distance > visible}
+                  onClick={() => onCardClick(game.slug)}
                 >
                   <img className="games__image" src={imageSource(game.cardImage)} alt={game.name} />
                   <div className="games__card-info">
