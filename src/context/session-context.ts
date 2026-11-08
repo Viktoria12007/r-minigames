@@ -6,6 +6,7 @@ type SessionContextType = {
   createAppSession: (user: User) => AppSession;
   checkAppSession: (now?: number) => SessionCheck;
   clearAppSession: () => Promise<void>;
+  refreshAppSession: () => SessionCheck;
   session: AppSession | null;
 };
 

@@ -13,28 +13,28 @@ interface IBurgerMenuProperties {
 }
 
 export default function BurgerMenu({ isOpen, onClose }: IBurgerMenuProperties) {
-  const { session } = useSession();
+  const { session, refreshAppSession } = useSession();
   const handleLogout = useLogout();
   const { openModalWindow } = useModalWindow();
   const isHomeActive = useIsHomeActive();
 
-  // const session = checkAppSession().session;
-
   function onLogin() {
+    refreshAppSession();
     openModalWindow({ children: <Auth outAuthMode="login" />, wide: false });
     onClose();
   }
 
   function onSignup() {
+    refreshAppSession();
     openModalWindow({ children: <Auth outAuthMode="register" />, wide: false });
     onClose();
   }
 
   function onNavClick(event: MouseEvent<HTMLElement>) {
     const target = event.target;
-    if (target instanceof Element && target.closest('a[href]')) {
-      onClose();
-    }
+    if (!(target instanceof Element) || !target.closest('a[href]')) return;
+    refreshAppSession();
+    onClose();
   }
 
   return (

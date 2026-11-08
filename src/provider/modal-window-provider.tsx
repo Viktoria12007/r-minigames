@@ -14,15 +14,13 @@ export function ModalWindowProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const closeModalWindow = useCallback(() => {
-    setModal((previous) => {
-      return previous
-        ? {
-            ...previous,
-            isOpen: false,
-          }
-        : previous;
-    });
-  }, []);
+    const onClose = modal?.onClose;
+    setModal(null);
+
+    if (onClose) {
+      setTimeout(onClose, 0);
+    }
+  }, [modal]);
 
   const contextValue = useMemo(
     () => ({

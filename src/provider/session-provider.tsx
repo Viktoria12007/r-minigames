@@ -1,23 +1,18 @@
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { SessionContext } from '../context/session-context.ts';
 import type { AppSession, SessionCheck } from '../types/types.ts';
 import { signOutFirebase } from '../shared/firebase.ts';
 import type { User } from 'firebase/auth';
 import { useSnackbar } from '../hooks/use-snackbar.ts';
 
-const appSessionKey = 'r-minigames:viktoria12007:app-session';
-const appSessionDuration = 5 * 60 * 1000;
-
-function getSession() {
-  return localStorage.getItem(appSessionKey)
-    ? JSON.parse(localStorage.getItem(appSessionKey) as string)
-    : null;
-}
+export const appSessionKey = 'r-minigames:viktoria12007:app-session';
+export const appSessionDuration = 5 * 60 * 1000;
 
 export default function SessionProvider({ children }: { children: ReactNode }) {
   const { showSnackbar } = useSnackbar();
 
-  const [session, setSession] = useState<AppSession | null>(getSession());
+  const [session, setSession] = useState<AppSession | null>(null);
+  const hasShownExpiration = useRef(false);
 
   function isValidSession(value: unknown, now: number): value is AppSession {
     if (typeof value !== 'object' || value === null || Array.isArray(value)) {
@@ -29,24 +24,18 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
       typeof candidate.email === 'string' &&
       candidate.email.length > 0 &&
       typeof candidate.authenticatedAt === 'number' &&
-      Number.isFinite(candidate.authenticatedAt) &&
+      Number.isSafeInteger(candidate.authenticatedAt) &&
+      candidate.authenticatedAt >= 0 &&
       candidate.authenticatedAt <= now &&
       (candidate.avatarUrl === undefined || typeof candidate.avatarUrl === 'string')
     );
   }
 
-  // function notifySessionChange(session?: AppSession): void {
-  //     dispatchEvent(
-  //         new CustomEvent<AppSession | undefined>('minigames:sessionchange', { detail: session }),
-  //     );
-  // }
-
-  function removeSessionAndSignOut(): void {
+  const removeSessionAndSignOut = useCallback((): void => {
     localStorage.removeItem(appSessionKey);
-    // notifySessionChange();
     setSession(null);
     void signOutFirebase().catch(() => null);
-  }
+  }, []);
 
   const createAppSession = useCallback((user: User) => {
     const email = user.email;
@@ -60,53 +49,59 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
       ...(user.photoURL && { avatarUrl: user.photoURL }),
     };
     localStorage.setItem(appSessionKey, JSON.stringify(session));
-    // notifySessionChange(session);
+    hasShownExpiration.current = false;
     setSession(session);
     return session;
   }, []);
 
-  const checkAppSession = useCallback((now = Date.now()): SessionCheck => {
-    const rawSession = localStorage.getItem(appSessionKey);
-    if (!rawSession) {
-      setSession(null);
-      return { status: 'guest' };
-    }
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(rawSession);
-    } catch {
-      removeSessionAndSignOut();
-      return { status: 'invalid' };
-    }
-    if (!isValidSession(parsed, now)) {
-      removeSessionAndSignOut();
-      return { status: 'invalid' };
-    }
-    if (now - parsed.authenticatedAt >= appSessionDuration) {
-      removeSessionAndSignOut();
-      return { status: 'expired' };
-    }
-    setSession(parsed);
-    return { status: 'active', session: parsed };
-  }, []);
+  const checkAppSession = useCallback(
+    (now = Date.now()): SessionCheck => {
+      const rawSession = localStorage.getItem(appSessionKey);
+      if (!rawSession) {
+        setSession(null);
+        return { status: 'guest' };
+      }
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(rawSession);
+      } catch {
+        removeSessionAndSignOut();
+        return { status: 'invalid' };
+      }
+      if (!isValidSession(parsed, now)) {
+        removeSessionAndSignOut();
+        return { status: 'invalid' };
+      }
+      if (now - parsed.authenticatedAt >= appSessionDuration) {
+        removeSessionAndSignOut();
+        return { status: 'expired' };
+      }
+      setSession(parsed);
+      return { status: 'active', session: parsed };
+    },
+    [removeSessionAndSignOut],
+  );
 
-  const refreshAppSession = useCallback(() => {
+  const refreshAppSession = useCallback((): SessionCheck => {
     const sessionCheck = checkAppSession();
     document.documentElement.dataset.authenticated = String(sessionCheck.status === 'active');
-    if (sessionCheck.status === 'expired') {
+    if (sessionCheck.status === 'expired' && !hasShownExpiration.current) {
+      hasShownExpiration.current = true;
       showSnackbar('Your session has expired. You are now browsing as a guest.', 'error');
     }
     setSession(sessionCheck.session ?? null);
+    return sessionCheck;
   }, [checkAppSession, showSnackbar]);
 
   const clearAppSession = useCallback(async (): Promise<void> => {
     localStorage.removeItem(appSessionKey);
-    // notifySessionChange();
     setSession(null);
     await signOutFirebase();
   }, []);
 
   useEffect(() => {
+    const startupTimer = setTimeout(refreshAppSession, 0);
+
     const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') {
         void refreshAppSession();
@@ -116,22 +111,20 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      clearTimeout(startupTimer);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [refreshAppSession]);
-
-  // useEffect(() => {
-  //     void refreshAppSession();
-  // }, [refreshAppSession]);
 
   const contextValue = useMemo(
     () => ({
       session,
       createAppSession,
       checkAppSession,
+      refreshAppSession,
       clearAppSession,
     }),
-    [checkAppSession, clearAppSession, createAppSession, session],
+    [checkAppSession, clearAppSession, createAppSession, refreshAppSession, session],
   );
 
   return <SessionContext.Provider value={contextValue}>{children}</SessionContext.Provider>;
