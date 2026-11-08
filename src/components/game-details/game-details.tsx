@@ -10,16 +10,33 @@ import type {
 } from '../../types/types.ts';
 import { formatLikes } from '../../shared/format-likes.ts';
 import { relativeTime } from '../../shared/relative-time.ts';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getApi, postApi } from '../../shared/api.ts';
 import { useSnackbar } from '../../hooks/use-snackbar.ts';
 import SkeletonGameDetails from './skeleton-game-details.tsx';
 import useSession from '../../hooks/use-session.ts';
 import type { SubmitEvent } from 'react';
+import useModalWindow from '../../hooks/use-modal-window.ts';
+import Auth from '../auth/auth.tsx';
 
 interface IGameDetailsProperties {
   selectedGame: string;
+  snapshot?: GameDetailsSnapshot;
 }
+
+type GameDetailsSnapshot = Pick<
+  GameDetailsState,
+  'gameDetails' | 'comments' | 'statusGameDetails' | 'statusComments' | 'avatarColors' | 'comment'
+>;
+
+type GameDetailsState = {
+  gameDetails: GameDetails | null;
+  comments: GameComment[];
+  statusGameDetails: Status;
+  statusComments: Status;
+  avatarColors: Record<string, number>;
+  comment: string;
+};
 
 function avatarInitial(name: string): string {
   return name.trim().charAt(0).toLocaleUpperCase() || '?';
@@ -31,19 +48,59 @@ function validAuthorName(session: AppSession): string {
   return candidate.length < 2 ? 'Player' : candidate.slice(0, 30);
 }
 
-export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
-  const { session } = useSession();
+export default function GameDetails({ selectedGame, snapshot }: IGameDetailsProperties) {
+  const { session, refreshAppSession } = useSession();
   const { showSnackbar } = useSnackbar();
+  const { openModalWindow } = useModalWindow();
 
-  const [gameDetails, setGameDetails] = useState<GameDetails | null>(null);
-  const [comments, setComments] = useState<GameComment[]>([]);
-  const [statusGameDetails, setStatusGameDetails] = useState<Status>('loading');
-  const [statusComments, setStatusComments] = useState<Status>('loading');
+  const [gameDetails, setGameDetails] = useState<GameDetails | null>(snapshot?.gameDetails ?? null);
+  const [comments, setComments] = useState<GameComment[]>(snapshot?.comments ?? []);
+  const [statusGameDetails, setStatusGameDetails] = useState<Status>(
+    snapshot?.statusGameDetails ?? 'loading',
+  );
+  const [statusComments, setStatusComments] = useState<Status>(
+    snapshot?.statusComments ?? 'loading',
+  );
   const [statusLikeComment, setStatusLikeComment] = useState(false);
   const [statusFavorite, setStatusFavorite] = useState(false);
-  const [avatarColors, setAvatarColors] = useState<Record<string, number>>({});
-  const [comment, setComment] = useState('');
+  const [avatarColors, setAvatarColors] = useState<Record<string, number>>(
+    snapshot?.avatarColors ?? {},
+  );
+  const [comment, setComment] = useState(snapshot?.comment ?? '');
   const [statusComment, setStatusComment] = useState(false);
+
+  const currentSnapshot = useMemo<GameDetailsSnapshot>(
+    () => ({
+      gameDetails,
+      comments,
+      statusGameDetails,
+      statusComments,
+      avatarColors,
+      comment,
+    }),
+    [avatarColors, comment, comments, gameDetails, statusComments, statusGameDetails],
+  );
+
+  const reopenGameDetails = useCallback(() => {
+    openModalWindow({
+      children: <GameDetails selectedGame={selectedGame} snapshot={currentSnapshot} />,
+    });
+  }, [currentSnapshot, openModalWindow, selectedGame]);
+
+  function requestAuthentication(): void {
+    openModalWindow({
+      children: <Auth outAuthMode="login" onAuthenticated={reopenGameDetails} />,
+      wide: false,
+      onClose: reopenGameDetails,
+    });
+  }
+
+  function getActiveSession(): AppSession | null {
+    const check = refreshAppSession();
+    if (check.status === 'active' && check.session) return check.session;
+    requestAuthentication();
+    return null;
+  }
 
   const colorFor = useCallback(
     (authorName: string): number => {
@@ -66,7 +123,8 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
   function handleAddComment(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!session) return;
+    const activeSession = getActiveSession();
+    if (!activeSession) return;
 
     controllerAddCommentReference.current?.abort();
 
@@ -92,8 +150,8 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
     void postApi<GameComment>(
       `/games/${encodeURIComponent(selectedGame)}/comments`,
       {
-        userEmail: session.email,
-        authorName: validAuthorName(session),
+        userEmail: activeSession.email,
+        authorName: validAuthorName(activeSession),
         text,
       },
       controller.signal,
@@ -121,7 +179,9 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
   const controllerFavoriteReference = useRef<AbortController | null>(null);
 
   function handleFavorite(game: GameDetails) {
-    if (!session || statusFavorite) return;
+    if (statusFavorite) return;
+    const activeSession = getActiveSession();
+    if (!activeSession) return;
     setStatusFavorite(true);
 
     controllerFavoriteReference.current?.abort();
@@ -131,7 +191,7 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
 
     void postApi<FavoriteResponse>(
       `/games/${encodeURIComponent(game.slug)}/favorite`,
-      { userEmail: session.email },
+      { userEmail: activeSession.email },
       controller.signal,
     )
       .then(({ data }) => {
@@ -156,7 +216,9 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
   const controllerLikeCommentReference = useRef<AbortController | null>(null);
 
   function handleLikeComment(comment: GameComment) {
-    if (!session || statusLikeComment) return;
+    if (statusLikeComment) return;
+    const activeSession = getActiveSession();
+    if (!activeSession) return;
     setStatusLikeComment(true);
 
     controllerLikeCommentReference.current?.abort();
@@ -166,7 +228,7 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
 
     void postApi<LikeResponse>(
       `/comments/${encodeURIComponent(comment.commentId)}/like`,
-      { userEmail: session?.email as string },
+      { userEmail: activeSession.email },
       controller.signal,
     )
       .then(({ data }) => {
@@ -350,6 +412,7 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
                   aria-busy={statusComment}
                   type={session ? 'submit' : 'button'}
                   disabled={statusComment}
+                  onClick={session ? undefined : requestAuthentication}
                 >
                   ➤
                 </button>
