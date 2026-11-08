@@ -18,7 +18,7 @@ export function ModalWindowProvider({ children }: { children: ReactNode }) {
     setModal(null);
 
     if (onClose) {
-        setTimeout(onClose, 0);
+      setTimeout(onClose, 0);
     }
   }, [modal]);
 
