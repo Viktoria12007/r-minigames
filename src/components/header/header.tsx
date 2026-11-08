@@ -1,19 +1,21 @@
 import Logo from '../logo/logo.tsx';
 import Profile from '../profile/profile.tsx';
-import { checkAppSession } from '../../shared/session.ts';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
 import useModalWindow from '../../hooks/use-modal-window.ts';
 import Auth from '../auth/auth.tsx';
 import BurgerMenu from '../burger-menu/burger-menu.tsx';
+import useSession from '../../hooks/use-session.ts';
+import useLogout from '../../hooks/use-logout.ts';
 
 export default function Header() {
+  const { session, refreshAppSession } = useSession();
+  const handleLogout = useLogout();
   const { openModalWindow } = useModalWindow();
+
   const [isOpenBurgerMenu, setIsOpenBurgerMenu] = useState(false);
   const isHomeActive = useIsHomeActive();
-
-  const session = checkAppSession().session;
 
   return (
     <header className="header container">
@@ -25,22 +27,23 @@ export default function Header() {
               to="/"
               className={`header__link ${isHomeActive ? 'active' : ''}`}
               aria-current={isHomeActive ? 'page' : undefined}
+              onClick={() => refreshAppSession()}
             >
               Home
             </Link>
           </li>
           <li className="header__item">
-            <NavLink to="library" className="header__link">
+            <NavLink to="library" className="header__link" onClick={() => refreshAppSession()}>
               Library
             </NavLink>
           </li>
           <li className="header__item">
-            <NavLink to="tournaments" className="header__link">
+            <NavLink to="tournaments" className="header__link" onClick={() => refreshAppSession()}>
               Tournaments
             </NavLink>
           </li>
           <li className="header__item">
-            <NavLink to="community" className="header__link">
+            <NavLink to="community" className="header__link" onClick={() => refreshAppSession()}>
               Community
             </NavLink>
           </li>
@@ -50,25 +53,33 @@ export default function Header() {
         {session ? (
           <>
             <Profile session={session} />
-            <button className="header__button button button_ghost">Log Out</button>
+            <button
+              className="header__button button button_ghost"
+              data-logout={true}
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
           </>
         ) : (
           <>
             <button
               className="header__button button button_ghost"
               data-auth="login"
-              onClick={() =>
-                openModalWindow({ children: <Auth outAuthMode="login" />, wide: false })
-              }
+              onClick={() => {
+                refreshAppSession();
+                openModalWindow({ children: <Auth outAuthMode="login" />, wide: false });
+              }}
             >
               Log In
             </button>
             <button
               className="header__button button"
               data-auth="register"
-              onClick={() =>
-                openModalWindow({ children: <Auth outAuthMode="register" />, wide: false })
-              }
+              onClick={() => {
+                refreshAppSession();
+                openModalWindow({ children: <Auth outAuthMode="register" />, wide: false });
+              }}
             >
               Sign Up
             </button>

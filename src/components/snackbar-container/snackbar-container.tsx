@@ -8,7 +8,7 @@ interface ISnackbarContainerProperties {
 }
 
 export default function SnackbarContainer({ snackbars, onClose }: ISnackbarContainerProperties) {
-  const app = document.querySelector<HTMLDivElement>('#app');
+  const app = document.querySelector<HTMLDivElement>('#root');
   return app
     ? createPortal(
         <div className="snackbar-list">

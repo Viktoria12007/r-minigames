@@ -1,10 +1,11 @@
 import Logo from '../logo/logo.tsx';
-import { checkAppSession } from '../../shared/session.ts';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
 import useModalWindow from '../../hooks/use-modal-window.ts';
 import Auth from '../auth/auth.tsx';
 import type { MouseEvent } from 'react';
+import useSession from '../../hooks/use-session.ts';
+import useLogout from '../../hooks/use-logout.ts';
 
 interface IBurgerMenuProperties {
   isOpen: boolean;
@@ -12,25 +13,28 @@ interface IBurgerMenuProperties {
 }
 
 export default function BurgerMenu({ isOpen, onClose }: IBurgerMenuProperties) {
+  const { session, refreshAppSession } = useSession();
+  const handleLogout = useLogout();
   const { openModalWindow } = useModalWindow();
   const isHomeActive = useIsHomeActive();
-  const session = checkAppSession().session;
 
   function onLogin() {
+    refreshAppSession();
     openModalWindow({ children: <Auth outAuthMode="login" />, wide: false });
     onClose();
   }
 
   function onSignup() {
+    refreshAppSession();
     openModalWindow({ children: <Auth outAuthMode="register" />, wide: false });
     onClose();
   }
 
   function onNavClick(event: MouseEvent<HTMLElement>) {
     const target = event.target;
-    if (target instanceof Element && target.closest('a[href]')) {
-      onClose();
-    }
+    if (!(target instanceof Element) || !target.closest('a[href]')) return;
+    refreshAppSession();
+    onClose();
   }
 
   return (
@@ -75,13 +79,23 @@ export default function BurgerMenu({ isOpen, onClose }: IBurgerMenuProperties) {
       </nav>
       <div className="burger-menu__actions">
         {session ? (
-          <button className="burger-menu__button button button_ghost-white">Log Out</button>
+          <button
+            className="burger-menu__button button button_ghost-white"
+            data-logout={true}
+            onClick={handleLogout}
+          >
+            Log Out
+          </button>
         ) : (
           <>
-            <button className="burger-menu__button button button_ghost-white" onClick={onLogin}>
+            <button
+              className="burger-menu__button button button_ghost-white"
+              data-auth="login"
+              onClick={onLogin}
+            >
               Log In
             </button>
-            <button className="burger-menu__button button" onClick={onSignup}>
+            <button className="burger-menu__button button" data-auth="register" onClick={onSignup}>
               Sign Up
             </button>
           </>
