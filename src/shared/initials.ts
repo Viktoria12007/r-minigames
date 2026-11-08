@@ -1,4 +1,4 @@
-export default function initialAvatar(name: string): string | null {
+export function initials(name: string): string | null {
   const words = name.trim().split(/\s+/u).filter(Boolean);
   const characters = words
     .slice(0, 2)

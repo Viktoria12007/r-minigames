@@ -1,19 +1,23 @@
 import Logo from '../logo/logo.tsx';
 import Profile from '../profile/profile.tsx';
-import { checkAppSession } from '../../shared/session.ts';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
 import useModalWindow from '../../hooks/use-modal-window.ts';
 import Auth from '../auth/auth.tsx';
 import BurgerMenu from '../burger-menu/burger-menu.tsx';
+import useSession from '../../hooks/use-session.ts';
+import useLogout from '../../hooks/use-logout.ts';
 
 export default function Header() {
+  const { session } = useSession();
+  const handleLogout = useLogout();
   const { openModalWindow } = useModalWindow();
+
+  // const session = checkAppSession().session;
+
   const [isOpenBurgerMenu, setIsOpenBurgerMenu] = useState(false);
   const isHomeActive = useIsHomeActive();
-
-  const session = checkAppSession().session;
 
   return (
     <header className="header container">
@@ -50,7 +54,13 @@ export default function Header() {
         {session ? (
           <>
             <Profile session={session} />
-            <button className="header__button button button_ghost">Log Out</button>
+            <button
+              className="header__button button button_ghost"
+              data-logout={true}
+              onClick={handleLogout}
+            >
+              Log Out
+            </button>
           </>
         ) : (
           <>
