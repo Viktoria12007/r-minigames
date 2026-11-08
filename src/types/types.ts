@@ -9,7 +9,7 @@ export type SessionStatus = 'active' | 'expired' | 'invalid' | 'guest';
 
 export type SessionCheck = {
   status: SessionStatus;
-  session?: AppSession;
+  session?: AppSession | null;
 };
 
 export type Leader = {
@@ -75,3 +75,12 @@ export type GameDetails = {
 };
 
 export type AuthMode = 'login' | 'register';
+
+export type AuthFields = {
+    email: string;
+    password: string;
+    username?: string;
+    confirmPassword?: string;
+};
+
+export type AuthErrors = Partial<Record<keyof AuthFields, string>>;
