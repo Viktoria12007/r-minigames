@@ -8,7 +8,6 @@ authentication timestamp, and an optional avatar URL; it never contains a passwo
 
 Copy `firebase.config.template` to an ignored `.env.local` and fill it with the Firebase web-app configuration.
 
-
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
