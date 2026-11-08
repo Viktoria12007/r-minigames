@@ -6,6 +6,7 @@ type SessionContextType = {
   createAppSession: (user: User) => AppSession;
   checkAppSession: (now?: number) => SessionCheck;
   clearAppSession: () => Promise<void>;
+  session: AppSession | null;
 };
 
 export const SessionContext = createContext<SessionContextType | null>(null);
