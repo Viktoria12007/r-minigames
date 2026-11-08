@@ -8,6 +8,7 @@ type ModalWindowContextType = {
 export type ModalOptions = {
   children: ReactNode;
   wide?: boolean;
+  onClose?: () => void;
 };
 
 export const ModalWindowContext = createContext<ModalWindowContextType | null>(null);
