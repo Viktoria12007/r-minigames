@@ -1,10 +1,10 @@
 import Logo from '../logo/logo.tsx';
-import { checkAppSession } from '../../shared/session.ts';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
 import useModalWindow from '../../hooks/use-modal-window.ts';
 import Auth from '../auth/auth.tsx';
 import type { MouseEvent } from 'react';
+import useSession from "../../hooks/use-session.ts";
 
 interface IBurgerMenuProperties {
   isOpen: boolean;
@@ -12,8 +12,10 @@ interface IBurgerMenuProperties {
 }
 
 export default function BurgerMenu({ isOpen, onClose }: IBurgerMenuProperties) {
+    const { checkAppSession } = useSession();
   const { openModalWindow } = useModalWindow();
   const isHomeActive = useIsHomeActive();
+
   const session = checkAppSession().session;
 
   function onLogin() {

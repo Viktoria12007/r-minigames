@@ -1,19 +1,21 @@
 import Logo from '../logo/logo.tsx';
 import Profile from '../profile/profile.tsx';
-import { checkAppSession } from '../../shared/session.ts';
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router';
 import useIsHomeActive from '../../hooks/use-is-home-active.ts';
 import useModalWindow from '../../hooks/use-modal-window.ts';
 import Auth from '../auth/auth.tsx';
 import BurgerMenu from '../burger-menu/burger-menu.tsx';
+import useSession from "../../hooks/use-session.ts";
 
 export default function Header() {
+    const { checkAppSession } = useSession();
   const { openModalWindow } = useModalWindow();
-  const [isOpenBurgerMenu, setIsOpenBurgerMenu] = useState(false);
-  const isHomeActive = useIsHomeActive();
 
   const session = checkAppSession().session;
+
+  const [isOpenBurgerMenu, setIsOpenBurgerMenu] = useState(false);
+  const isHomeActive = useIsHomeActive();
 
   return (
     <header className="header container">
