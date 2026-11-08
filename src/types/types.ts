@@ -74,6 +74,21 @@ export type GameDetails = {
   }>;
 };
 
+export type GameComment = {
+    commentId: string;
+    authorName: string;
+    text: string;
+    likesCount: number;
+    createdAt: string;
+    isLikedByCurrentUser?: boolean;
+};
+
+export type CommentsMeta = { totalComments?: number };
+
+export type LikeResponse = { isLikedByCurrentUser: boolean; likesCount: number };
+
+export type FavoriteResponse = { isFavorited: boolean; likesCount: number };
+
 export type AuthMode = 'login' | 'register';
 
 export type AuthFields = {
