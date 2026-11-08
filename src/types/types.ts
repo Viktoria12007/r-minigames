@@ -75,12 +75,12 @@ export type GameDetails = {
 };
 
 export type GameComment = {
-    commentId: string;
-    authorName: string;
-    text: string;
-    likesCount: number;
-    createdAt: string;
-    isLikedByCurrentUser?: boolean;
+  commentId: string;
+  authorName: string;
+  text: string;
+  likesCount: number;
+  createdAt: string;
+  isLikedByCurrentUser?: boolean;
 };
 
 export type CommentsMeta = { totalComments?: number };
