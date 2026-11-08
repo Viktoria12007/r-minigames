@@ -102,8 +102,8 @@ export default function GameDetails({ selectedGame }: IGameDetailsProperties) {
             <div className="game-details__records">
               <h3 className="game-details__section-title">🏆 Top Records</h3>
               <ul className="game-details__record-list">
-                {gameDetails.topRecords.map((record) => (
-                  <li className="game-details__record">
+                {gameDetails.topRecords.map((record, index) => (
+                  <li key={index} className="game-details__record">
                     <span className="game-details__record-medal">
                       {['🥇', '🥈', '🥉'][record.position - 1] ?? `#${record.position}`}
                     </span>
