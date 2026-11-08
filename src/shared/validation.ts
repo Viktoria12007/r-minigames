@@ -1,4 +1,4 @@
-import type {AuthErrors, AuthFields, AuthMode} from "../types/types.ts";
+import type { AuthErrors, AuthFields, AuthMode } from '../types/types.ts';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const usernamePattern = /^[A-Z][A-Za-z0-9]*$/;

@@ -77,10 +77,10 @@ export type GameDetails = {
 export type AuthMode = 'login' | 'register';
 
 export type AuthFields = {
-    email: string;
-    password: string;
-    username?: string;
-    confirmPassword?: string;
+  email: string;
+  password: string;
+  username?: string;
+  confirmPassword?: string;
 };
 
 export type AuthErrors = Partial<Record<keyof AuthFields, string>>;
