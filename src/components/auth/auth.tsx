@@ -9,9 +9,10 @@ import useSession from '../../hooks/use-session.ts';
 
 interface IAuthProperties {
   outAuthMode: AuthMode;
+  onAuthenticated?: () => void;
 }
 
-export default function Auth({ outAuthMode }: IAuthProperties) {
+export default function Auth({ outAuthMode, onAuthenticated }: IAuthProperties) {
   const { createAppSession } = useSession();
   const { showSnackbar } = useSnackbar();
   const { closeModalWindow } = useModalWindow();
@@ -42,13 +43,11 @@ export default function Auth({ outAuthMode }: IAuthProperties) {
   }
 
   function handleValidationInput() {
-    // renderValidation();
     setValidationErrors(validateAuthFields(authMode, formValues));
   }
 
   async function handleSubmitByEmail(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    // renderValidation();
     setValidationErrors(validateAuthFields(authMode, formValues));
     if (isPending) return;
     setIsPending(true);
@@ -64,7 +63,11 @@ export default function Auth({ outAuthMode }: IAuthProperties) {
       createAppSession(user);
       showSnackbar(`Welcome${user.displayName ? `, ${user.displayName}` : ''}!`, 'success');
       setIsPending(false);
-      closeModalWindow();
+      if (onAuthenticated) {
+        onAuthenticated();
+      } else {
+        closeModalWindow();
+      }
     } catch (error) {
       showSnackbar(
         error instanceof Error ? error.message : 'Authentication failed. Please try again.',
@@ -72,7 +75,6 @@ export default function Auth({ outAuthMode }: IAuthProperties) {
       );
     } finally {
       setIsPending(false);
-      // renderValidation();
       setValidationErrors(validateAuthFields(authMode, formValues));
     }
   }
@@ -85,7 +87,11 @@ export default function Auth({ outAuthMode }: IAuthProperties) {
       createAppSession(user);
       showSnackbar(`Welcome${user.displayName ? `, ${user.displayName}` : ''}!`, 'success');
       setIsPending(false);
-      closeModalWindow();
+      if (onAuthenticated) {
+        onAuthenticated();
+      } else {
+        closeModalWindow();
+      }
     } catch (error) {
       showSnackbar(
         error instanceof Error ? error.message : 'Google sign-in was not completed.',
