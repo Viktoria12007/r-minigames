@@ -8,10 +8,16 @@ import { useSnackbar } from '../hooks/use-snackbar.ts';
 const appSessionKey = 'r-minigames:viktoria12007:app-session';
 const appSessionDuration = 5 * 60 * 1000;
 
+function getSession() {
+  return localStorage.getItem(appSessionKey)
+    ? JSON.parse(localStorage.getItem(appSessionKey) as string)
+    : null;
+}
+
 export default function SessionProvider({ children }: { children: ReactNode }) {
   const { showSnackbar } = useSnackbar();
 
-  const [_, setSession] = useState<AppSession | null>(null);
+  const [session, setSession] = useState<AppSession | null>(getSession());
 
   function isValidSession(value: unknown, now: number): value is AppSession {
     if (typeof value !== 'object' || value === null || Array.isArray(value)) {
@@ -84,13 +90,13 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     return { status: 'active', session: parsed };
   }, []);
 
-  const refreshAppSession = useCallback((): ReturnType<typeof checkAppSession> => {
+  const refreshAppSession = useCallback(() => {
     const sessionCheck = checkAppSession();
     document.documentElement.dataset.authenticated = String(sessionCheck.status === 'active');
     if (sessionCheck.status === 'expired') {
       showSnackbar('Your session has expired. You are now browsing as a guest.', 'error');
     }
-    return sessionCheck;
+    setSession(sessionCheck.session ?? null);
   }, [checkAppSession, showSnackbar]);
 
   const clearAppSession = useCallback(async (): Promise<void> => {
@@ -120,11 +126,12 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
 
   const contextValue = useMemo(
     () => ({
+      session,
       createAppSession,
       checkAppSession,
       clearAppSession,
     }),
-    [checkAppSession, clearAppSession, createAppSession],
+    [checkAppSession, clearAppSession, createAppSession, session],
   );
 
   return <SessionContext.Provider value={contextValue}>{children}</SessionContext.Provider>;
