@@ -7,6 +7,7 @@ import { baseUrl } from '../../shared/base-url.ts';
 import SkeletonGames from './skeleton-games.tsx';
 import useModalWindow from '../../hooks/use-modal-window.ts';
 import GameDetails from '../game-details/game-details.tsx';
+import useSession from '../../hooks/use-session.ts';
 
 const autoplayDelay = 4000;
 
@@ -25,6 +26,7 @@ function visibleDistance(): number {
 export default function Games() {
   const { showSnackbar } = useSnackbar();
   const { openModalWindow } = useModalWindow();
+  const { refreshAppSession } = useSession();
 
   const [status, setStatus] = useState<Status>('loading');
   const [games, setGames] = useState<FeaturedGame[]>([]);
@@ -135,9 +137,9 @@ export default function Games() {
   };
 
   function onCardClick(selectedGame: string) {
-    if (!didSwipe) {
-      openModalWindow({ children: <GameDetails selectedGame={selectedGame} /> });
-    }
+    if (didSwipe) return;
+    refreshAppSession();
+    openModalWindow({ children: <GameDetails selectedGame={selectedGame} /> });
   }
 
   return (
